@@ -26,27 +26,51 @@ See [Cargo.toml](Cargo.toml) version
 * [Apollo GraphQL](https://www.apollographql.com/)
 * [Node.js](https://nodejs.org/en/)
 
-## Servers
-### Optional - Setup Local PostGreSQL database
->      $ ./scripts/docker/init-db.sh
+## Get up and running
 
-### Optional - Setup SQLx cli
->      $ cargo install sqlx-cli
+There are two ways to intialize the database: using `sqlx` or mounting the
+migrations folder into the postgres container on `/docker-entrypoint-initdb`.
 
-### Run user microservice
->      $ cd ./svc-user
->      $ sqlx database create
->      $ sqlx migrate run
->      $ cargo run
+### Initializing the DB with initdb scripts
 
-### Run skill microservice
->      $ cd ./svc-skill
->      $ sqlx migrate run
->      $ cargo run
+Take a look the docker-compose file and comment in the line where the
+migrations folder is mounted as `/docker-entrypoint-initdb` and spin up the
+container:
 
-### Run Gateway
->      $ cd ./gateway
->      $ npm install
->      $ npm run dev
+```bash
+docker-compose up -d
+```
 
+### Initializing the DB with sqlx
 
+```bash
+$ cargo install sqlx-cli
+```
+
+spin up the postgres container using `docker-compose` and invoke the sqlx:
+
+```bash
+$ docker-compose up -d
+$ sqlx database create
+$ sqlx migrate run
+```
+
+### build and run the coder microservice
+```bash
+$ cd ./svc-coder
+$ cargo run
+```
+
+### build and run the skill microservice
+```bash
+$ cd ./svc-skill
+$ cargo run
+```
+
+### run the apollo gateway
+
+```bash
+$ cd ./gateway
+$ npm install
+$ npm run dev
+```
